@@ -14,6 +14,7 @@
         android:layout_marginTop="352dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="352dp"
+        android:background="@color/pink_rose_ebony"
         android:text="@string/button_StartRecording"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
