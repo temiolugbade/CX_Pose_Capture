@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">CX Pose Capture</string>
+
     <string name="button_StartRecording">Start Recording Clothing Interaction</string>
+    <string name="button_EndRecording">End Clothing Interaction</string>
+
+    <string name="storage_directory">TCC_Pose</string>
 </resources>

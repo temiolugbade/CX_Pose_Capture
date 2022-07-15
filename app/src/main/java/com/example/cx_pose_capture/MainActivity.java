@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -49,10 +50,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Button buttonView = findViewById(R.id.btn_StartRecording);
+        buttonView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startRecording();
+            }
+        });
     }
 
-    /** Called when the user taps the Send button */
-    public void startRecording(View view) {
+
+    public void startRecording() {
         // Do something in response to button
         if (hasPermissions())
         {
