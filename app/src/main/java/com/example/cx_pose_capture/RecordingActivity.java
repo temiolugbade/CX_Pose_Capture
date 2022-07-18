@@ -22,6 +22,7 @@ import android.view.OrientationEventListener;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -54,12 +55,6 @@ public class RecordingActivity extends AppCompatActivity {
     private Handler mHandler;
 
 
-    // Accurate pose detector on static images, when depending on the pose-detection-accurate sdk
-    private final AccuratePoseDetectorOptions options_PoseDetector = new AccuratePoseDetectorOptions.Builder()
-            .setDetectorMode(AccuratePoseDetectorOptions.STREAM_MODE)
-            .build();
-
-    private final PoseDetector poseDetector = PoseDetection.getClient(options_PoseDetector);
     private final int[] POSE_LANDMARKS = {PoseLandmark.LEFT_SHOULDER, PoseLandmark.RIGHT_SHOULDER,
             PoseLandmark.LEFT_ELBOW, PoseLandmark.RIGHT_ELBOW, PoseLandmark.LEFT_WRIST, PoseLandmark.RIGHT_WRIST,
             PoseLandmark.LEFT_HIP, PoseLandmark.RIGHT_HIP, PoseLandmark.LEFT_KNEE, PoseLandmark.RIGHT_KNEE,
@@ -138,16 +133,22 @@ public class RecordingActivity extends AppCompatActivity {
 
     private String getDateTime(){
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss_SSS");
         return simpleDateFormat.format(calendar.getTime()).toString();
     }
 
     private void bindImageAnalysis(@NonNull ProcessCameraProvider cameraProvider) {
 
+        Preview preview = new Preview.Builder().build();
+        CameraSelector cameraSelector = new CameraSelector.Builder()
+                .requireLensFacing(CameraSelector.LENS_FACING_FRONT).build();
+
         ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
                 .setTargetResolution(new Size(1280, 720))
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build();
+
+        preview.setSurfaceProvider(previewView.getSurfaceProvider());
 
         imageAnalysis.setAnalyzer(ContextCompat.getMainExecutor(this), new ImageAnalysis.Analyzer() {
             @Override
@@ -155,66 +156,58 @@ public class RecordingActivity extends AppCompatActivity {
 
                 @SuppressLint("UnsafeOptInUsageError") Image mediaImage = imageProxy.getImage();
                 if (mediaImage != null) {
+
+
                     InputImage image = InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo()
                                                 .getRotationDegrees());
                     Task<Pose> result = pose_estimation(image);
                     result.addOnCompleteListener(results -> imageProxy.close());
-                    Pose result_Pose = result.getResult();
 
 
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
 
-                            writePoseToFile(result_Pose);
-                        }
-                    });
+
 
                 }
             }
         });
 
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Log.d("EXPECTED", "Test - Handler has posted new writing task to writing thread");
-            }
-        });
 
-        /*OrientationEventListener orientationEventListener = new OrientationEventListener(this) {
-            @Override
-            public void onOrientationChanged(int orientation) {
-            }
-        };
 
-        orientationEventListener.enable();*/
+        cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector, imageAnalysis, preview);
 
-        Preview preview = new Preview.Builder().build();
-        CameraSelector cameraSelector = new CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_FRONT).build();
-        //preview.setSurfaceProvider(previewView.createSurfaceProvider());
-        cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector,
-                imageAnalysis, preview);
+
     }
 
     private Task<Pose> pose_estimation(InputImage image){
 
+        AccuratePoseDetectorOptions options_PoseDetector = new AccuratePoseDetectorOptions.Builder()
+                .setDetectorMode(AccuratePoseDetectorOptions.STREAM_MODE)
+                .build();
+       PoseDetector poseDetector = PoseDetection.getClient(options_PoseDetector);
+
+
+
         Task<Pose> result =
                 poseDetector.process(image)
-                            .addOnSuccessListener(
+                        .addOnSuccessListener(
                                 new OnSuccessListener<Pose>() {
                                     @Override
                                     public void onSuccess(Pose pose) {
-                                        // Task completed successfully
-                                        // ...
+                                        Log.d("EXPECTED", "Processes image successfully");
+                                        mHandler.post(new Runnable() {
+                                            @Override
+                                            public void run() {
+
+                                                writePoseToFile(pose);
+                                            }
+                                        });
                                     }
                                 })
                             .addOnFailureListener(
                                 new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        // Task failed with an exception
-                                        // ...
+                                        Log.d("EXPECTED", e.getMessage());
                                     }
                                 });
 
@@ -223,35 +216,51 @@ public class RecordingActivity extends AppCompatActivity {
 
 
     private void writePoseToFile(Pose pose){
-        Log.d("EXPECTED", "Handler has posted new writing task to writing thread");
+
         // Get all PoseLandmarks. If no person was detected, the list will be empty
         List<PoseLandmark> allPoseLandmarks = pose.getAllPoseLandmarks();
 
         if (!allPoseLandmarks.isEmpty()){
+
             // Or get specific PoseLandmarks individually. These will all be null if no person
             // was detected
-            float[] landmark_Pos_Conf = {0, 0, 0, 0};
-            for (int landmark : POSE_LANDMARKS){
-                PointF3D landmark_Pos3D = pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER).getPosition3D();
-                landmark_Pos_Conf[0] = landmark_Pos3D.getX();
-                landmark_Pos_Conf[1] = landmark_Pos3D.getY();
-                landmark_Pos_Conf[2] = landmark_Pos3D.getZ();
-                landmark_Pos_Conf[3] = pose.getPoseLandmark(PoseLandmark.LEFT_SHOULDER).getInFrameLikelihood();
-            }
+            float[][] landmark_Pos_Conf = new float[4][POSE_LANDMARKS.length];
+            PointF3D landmark_Pos3D;
+            for (int landmark : POSE_LANDMARKS) {
+                landmark_Pos3D = pose.getPoseLandmark(landmark).getPosition3D();
+                landmark_Pos_Conf[0][landmark] = landmark_Pos3D.getX();
+                landmark_Pos_Conf[1][landmark] = landmark_Pos3D.getY();
+                landmark_Pos_Conf[2][landmark] = landmark_Pos3D.getZ();
+                landmark_Pos_Conf[3][landmark] = pose.getPoseLandmark(landmark).getInFrameLikelihood();
 
-            //TO DO - Now, write to file!
+
+                Log.d("EXPECTED", String.valueOf(landmark) + ", "
+                        +String.valueOf(landmark_Pos_Conf[0][landmark]) + ", "
+                        + String.valueOf(landmark_Pos_Conf[1][landmark]) + ", "
+                        + String.valueOf(landmark_Pos_Conf[2][landmark]) + ", "
+                        + String.valueOf(landmark_Pos_Conf[3][landmark]) + ", ");
+
+            }
             try {
 
                 writer.write(getDateTime());
-                writer.write(" ");
-                for(float data : landmark_Pos_Conf){
-                    writer.write(Float.toString(data));
+                writer.write(", ");
+                for (int i = 0; i < POSE_LANDMARKS.length; i++) {
+                    for (int j = 0; j < 4; j++) {
+                        writer.write(Float.toString(landmark_Pos_Conf[j][i]));
+                        writer.write(", ");
+                    }
                 }
                 writer.newLine();
 
-            }catch(IOException e){
+                Log.d("EXPECTED", "Handler has posted new writing task to writing thread");
+
+
+            } catch (IOException e) {
                 Log.d("EXPECTED", "Something went wrong in writing data to file");
             }
+        }else{
+            Log.d("EXPECTED", "Empty landmarks!");
         }
 
 
