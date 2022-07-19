@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Environment;
@@ -26,6 +27,7 @@ import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.common.PointF3D;
@@ -75,7 +77,23 @@ public class RecordingActivity extends AppCompatActivity {
         buttonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                endRecording();
+
+                new MaterialAlertDialogBuilder(RecordingActivity.this)
+                        .setTitle(getString(R.string.dialog_EndRecording_Title))
+                        .setMessage(getString(R.string.dialog_EndRecording_Msg))
+                        .setNeutralButton(getString(R.string.dialog_EndRecording_Cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //do nothing
+                            }
+                        })
+                        .setPositiveButton(getString(R.string.dialog_EndRecording_Ok), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                endRecording();
+                            }
+                        }).show();
+
             }
         });
 

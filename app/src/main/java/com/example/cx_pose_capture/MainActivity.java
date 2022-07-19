@@ -3,9 +3,11 @@ package com.example.cx_pose_capture;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -13,8 +15,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
+
 
 public class MainActivity extends AppCompatActivity {
+
 
     private static final String[] REQUIRED_PERMISSIONS = {Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -54,9 +60,28 @@ public class MainActivity extends AppCompatActivity {
         buttonView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startRecording();
+
+                new MaterialAlertDialogBuilder(MainActivity.this)
+                        .setTitle(getString(R.string.dialog_StartRecording_Title))
+                        .setMessage(getString(R.string.dialog_StartRecording_Msg))
+                        .setNeutralButton(getString(R.string.dialog_StartRecording_Cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //do nothing
+                            }
+                        })
+                        .setPositiveButton(getString(R.string.dialog_StartRecording_Ok), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                startRecording();
+                            }
+                        }).show();
+
+
+
             }
         });
+
     }
 
 
