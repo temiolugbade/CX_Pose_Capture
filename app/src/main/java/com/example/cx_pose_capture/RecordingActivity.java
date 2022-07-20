@@ -56,7 +56,6 @@ public class RecordingActivity extends AppCompatActivity {
     private DataWritingThread mThread;
     private Handler mHandler;
 
-
     private final int[] POSE_LANDMARKS = {PoseLandmark.LEFT_SHOULDER, PoseLandmark.RIGHT_SHOULDER,
             PoseLandmark.LEFT_ELBOW, PoseLandmark.RIGHT_ELBOW, PoseLandmark.LEFT_WRIST, PoseLandmark.RIGHT_WRIST,
             PoseLandmark.LEFT_HIP, PoseLandmark.RIGHT_HIP, PoseLandmark.LEFT_KNEE, PoseLandmark.RIGHT_KNEE,
@@ -116,6 +115,7 @@ public class RecordingActivity extends AppCompatActivity {
                 }
             }
         }, ContextCompat.getMainExecutor(this));
+
 
 
     }
@@ -240,6 +240,8 @@ public class RecordingActivity extends AppCompatActivity {
 
         if (!allPoseLandmarks.isEmpty()){
 
+
+
             // Or get specific PoseLandmarks individually. These will all be null if no person
             // was detected
             float[][] landmark_Pos_Conf = new float[4][POSE_LANDMARKS.length];
@@ -288,6 +290,7 @@ public class RecordingActivity extends AppCompatActivity {
     public void endRecording() {
         // Do something in response to button
         Log.d("EXPECTED", "User has ended recording");
+
 
         mThread.quitSafely();
         this.finishAffinity();
