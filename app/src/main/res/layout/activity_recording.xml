@@ -45,8 +45,16 @@
             android:id="@+id/preview_Recording"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
         </androidx.camera.view.PreviewView>
+
+        <com.example.cx_pose_capture.GraphicOverlay
+            android:id="@+id/graphic_overlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintLeft_toLeftOf="@id/preview_Recording"
+            app:layout_constraintRight_toRightOf="@id/preview_Recording"
+            app:layout_constraintTop_toTopOf="@id/preview_Recording"
+            app:layout_constraintBottom_toBottomOf="@id/preview_Recording"/>
 
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

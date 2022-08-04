@@ -14,5 +14,4 @@
     <string name="dialog_EndRecording_Cancel">Continue recording</string>
     <string name="dialog_EndRecording_Ok">End recording</string>
 
-    <string name="storage_directory">TCC_Pose</string>
 </resources>
