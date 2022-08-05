@@ -25,7 +25,7 @@ public class DataWritingThread extends HandlerThread {
 
     public DataWritingThread(String name) {
         super(name);
-        myHandler = new Handler(Looper.getMainLooper());
+        myHandler = new Handler(Looper.myLooper());
         createWriteFolder();
     }
 

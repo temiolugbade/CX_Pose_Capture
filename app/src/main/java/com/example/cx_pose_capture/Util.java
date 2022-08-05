@@ -1,24 +1,9 @@
 package com.example.cx_pose_capture;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.ImageFormat;
-import android.graphics.Matrix;
-import android.graphics.Rect;
-import android.graphics.YuvImage;
-import android.media.Image;
-import android.os.Build;
-import android.util.Log;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.camera.core.ExperimentalGetImage;
-import androidx.camera.core.ImageProxy;
 
 import com.google.mlkit.vision.pose.PoseLandmark;
 
-import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -40,6 +25,7 @@ public class Util {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd_MM_yyyy_HH_mm_ss_SSS");
         return simpleDateFormat.format(calendar.getTime()).toString();
     }
+
 
 
 }

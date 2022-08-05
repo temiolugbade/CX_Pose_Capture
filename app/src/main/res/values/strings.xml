@@ -3,6 +3,9 @@
 
     <string name="button_StartRecording">Start Recording Clothing Interaction</string>
     <string name="button_EndRecording">End Clothing Interaction</string>
+    <string name="chk_ShowInFrameLikelihood">Show visibility likelihood</string>
+    <string name="chk_VisualizeZ">Visualize distance from camera</string>
+    <string name="txt_PoseClassification"> interpreting pose... </string>
 
     <string name="dialog_StartRecording_Title">Are you ready to start recording?</string>
     <string name="dialog_StartRecording_Msg">This will start the recording of your joint positions while you interact with your chosen garment or accessory.</string>
@@ -13,5 +16,6 @@
     <string name="dialog_EndRecording_Msg">This will end the recording and close the app.</string>
     <string name="dialog_EndRecording_Cancel">Continue recording</string>
     <string name="dialog_EndRecording_Ok">End recording</string>
+
 
 </resources>

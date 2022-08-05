@@ -2,7 +2,11 @@ package com.example.cx_pose_capture;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.camera.core.Preview;
+import androidx.camera.lifecycle.ProcessCameraProvider;
+import androidx.camera.view.PreviewView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 
@@ -17,9 +21,12 @@ import android.widget.Button;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.mlkit.vision.demo.GraphicOverlay;
 
 
 public class MainActivity extends AppCompatActivity {
+
+
 
 
     private static final String[] REQUIRED_PERMISSIONS = {Manifest.permission.CAMERA,

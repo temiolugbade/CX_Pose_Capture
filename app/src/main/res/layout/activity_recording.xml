@@ -7,6 +7,7 @@
     android:background="@color/pink_rose_ebony"
     tools:context=".RecordingActivity">
 
+
     <Button
         android:id="@+id/btn_EndRecording"
         android:layout_width="wrap_content"
@@ -14,6 +15,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:backgroundTint="@color/pink_rose_ebony"
         android:text="@string/button_EndRecording"
         android:textColor="@color/white"
@@ -22,39 +24,96 @@
         android:textColorLink="@color/white"
         android:textSize="20dp"
         app:iconPadding="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/frm_PreviewContainer"
+        app:layout_constraintBottom_toTopOf="@id/frm_PreviewContainer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+
     <FrameLayout
         android:id="@+id/frm_PreviewContainer"
-        android:layout_width="379dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="722dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_EndRecording">
+        app:layout_constraintTop_toBottomOf="@id/btn_EndRecording">
 
         <androidx.camera.view.PreviewView
             android:id="@+id/preview_Recording"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
         </androidx.camera.view.PreviewView>
 
-        <com.example.cx_pose_capture.GraphicOverlay
-            android:id="@+id/graphic_overlay"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintLeft_toLeftOf="@id/preview_Recording"
-            app:layout_constraintRight_toRightOf="@id/preview_Recording"
-            app:layout_constraintTop_toTopOf="@id/preview_Recording"
-            app:layout_constraintBottom_toBottomOf="@id/preview_Recording"/>
 
     </FrameLayout>
+
+
+    <com.google.mlkit.vision.demo.GraphicOverlay
+        android:id="@+id/graphic_overlay"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_EndRecording" />
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="150dp"
+        android:layout_marginBottom="600dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_EndRecording">
+
+        <CheckBox
+            android:id="@+id/chk_showInFrameLikelihood"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/chk_ShowInFrameLikelihood"
+            android:textColor="@color/black"
+            android:textColorHighlight="@color/black"
+            android:textColorHint="@color/black"
+            android:textColorLink="@color/black"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <CheckBox
+            android:id="@+id/chk_visualizeZ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/chk_VisualizeZ"
+            android:textColorHighlight="@color/pink_rose_ebony"
+            android:textColorLink="@color/pink_rose_ebony"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txt_PoseClassification"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="650dp"
+        android:layout_marginBottom="5dp"
+        android:background="@color/pink_rose_ebony"
+        android:text="@string/txt_PoseClassification"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textColorHighlight="@color/white"
+        android:textColorHint="@color/white"
+        android:textColorLink="@color/white"
+        android:textSize="30dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/frm_PreviewContainer" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
