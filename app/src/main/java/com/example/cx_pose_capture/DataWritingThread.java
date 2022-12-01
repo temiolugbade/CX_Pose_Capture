@@ -1,6 +1,7 @@
 package com.example.cx_pose_capture;
 
 
+import android.content.Context;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -16,6 +17,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.SortedMap;
 
 public class DataWritingThread extends HandlerThread {
 
@@ -26,22 +28,33 @@ public class DataWritingThread extends HandlerThread {
     public DataWritingThread(String name) {
         super(name);
         myHandler = new Handler(Looper.myLooper());
-        createWriteFolder();
+        //createWriteFolder();
     }
 
 
-    public Handler getHandler(){
+
+    public Handler extraSetup(BufferedWriter writer){
+
+        myWriter = writer;
         return myHandler;
     }
 
-    private void createWriteFolder(){
+
+    public static BufferedWriter createWriteFolder(Context c){
+
+        String storageDirectoryName = "EnTimeMent_Pose";
+        BufferedWriter myWriter;
+
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
             //fail safely
             Log.d("EXPECTED", "I CANNOT write to storage");
+
+            return null;
         }else{
 
-            File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
-                    storageDirectoryName);
+            //File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),
+                    //storageDirectoryName);
+            File dir = new File(c.getExternalFilesDir(null), storageDirectoryName);
 
             if (!dir.mkdirs()) {
                 if(!dir.exists()) {
@@ -53,12 +66,17 @@ public class DataWritingThread extends HandlerThread {
             try {
                 myWriter = new BufferedWriter(new FileWriter(file));
             }catch(IOException e){
+                myWriter = null;
                 Log.d("EXPECTED", "Writer NOT created");
+
+
             }
 
-
+            return myWriter;
 
         }
+
+
 
     }
 

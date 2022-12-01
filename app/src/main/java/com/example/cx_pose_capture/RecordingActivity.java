@@ -112,7 +112,7 @@ public class RecordingActivity extends AppCompatActivity {
 
         mDataWriteThread = new DataWritingThread("DataWritingThread");
         mDataWriteThread.start();
-        mDataWriteHandler = mDataWriteThread.getHandler();
+        mDataWriteHandler = mDataWriteThread.extraSetup(DataWritingThread.createWriteFolder(getApplicationContext()));
 
 
         mAffectPredThread = new AffectPredictionThread("AffectPredictionThread");
